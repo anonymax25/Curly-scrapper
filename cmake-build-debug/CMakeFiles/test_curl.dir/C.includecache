@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/natin56y/CLionProjects/test-curl/main.c
+stdio.h
+-
+stdlib.h
+-
+unistd.h
+-
+dirent.h
+-
+errno.h
+-
+string.h
+-
+time.h
+-
+curl/curl.h
+-
+sys/stat.h
+-
+
