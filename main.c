@@ -8,6 +8,9 @@
 #include <curl/curl.h>
 #include <sys/stat.h>
 
+
+
+
 int curlLink(char * currentURL,char** seenURL,int deepLevel,int versioning);
 
 int countFilesInDir(char* location);
@@ -20,15 +23,16 @@ static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream);
 
 int remove_directory(const char *path);
 
-void makeDirectory(char* url,int doVersion);
+int analyseHTMLFile(char* destinationFileName, char* linkStorageDir);
+
 
 
 int main(int argc, char *argv[]) {
 
     //input qui arrive depuis la partie config
     char ** seenLinks = NULL;
-    char url[255] = "https://www.iana.org/domains/example";
-    //char url[255] = "http://www.example.com";
+    //char url[255] = "https://www.iana.org/domains/example";
+    char url[255] = "http://www.example.com";
     int deepLevel;
     int doVersion;
 
@@ -48,14 +52,32 @@ int curlLink(char * currentURL,char** seenURL,int deepLevel,int versioning){
     CURL *curl_handle;
     curl_global_init(CURL_GLOBAL_ALL);
     curl_handle = curl_easy_init();
+
     /* set URL to get here */
+    curl_easy_setopt(curl_handle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
     curl_easy_setopt(curl_handle, CURLOPT_URL, currentURL);
+
+    curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "Mozilla/5.0");
     /* Switch on full protocol/debug output while testing */
     curl_easy_setopt(curl_handle, CURLOPT_VERBOSE, 1L);
     /* disable progress meter, set to 0L to enable and disable debug output */
     curl_easy_setopt(curl_handle, CURLOPT_NOPROGRESS, 1L);
     /* send all data to this function  */
     curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_data);
+
+    /* For completeness */
+    curl_easy_setopt(curl_handle, CURLOPT_ACCEPT_ENCODING, "");
+    curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 5L);
+    curl_easy_setopt(curl_handle, CURLOPT_FOLLOWLOCATION, 1L);
+    curl_easy_setopt(curl_handle, CURLOPT_MAXREDIRS, 10L);
+    curl_easy_setopt(curl_handle, CURLOPT_CONNECTTIMEOUT, 2L);
+    curl_easy_setopt(curl_handle, CURLOPT_COOKIEFILE, "");
+    curl_easy_setopt(curl_handle, CURLOPT_FILETIME, 1L);
+    curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "mini crawler");
+    curl_easy_setopt(curl_handle, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+    curl_easy_setopt(curl_handle, CURLOPT_UNRESTRICTED_AUTH, 1L);
+    curl_easy_setopt(curl_handle, CURLOPT_PROXYAUTH, CURLAUTH_ANY);
+    curl_easy_setopt(curl_handle, CURLOPT_EXPECT_100_TIMEOUT_MS, 0L);
 
 
     writeCurlHandleToFile(curl_handle,currentURL,versioning);
@@ -109,6 +131,7 @@ char* getTimeForDirName(){
 }
 int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion){
 
+    int error = 0;
     //remove "http://wwww."
     char doubleU;
     int indexChar = 0;
@@ -234,7 +257,7 @@ int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion){
     //file open, then write
     FILE* pagefile = fopen(destinationFileName, "w");
     if(pagefile != NULL) {
-        // write the page body to this file handle
+        // write page to file
         curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, pagefile);
 
         // get it!
@@ -245,6 +268,8 @@ int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion){
     }else{
         fprintf(stdout,"Error opening file: %s\n",destinationFileName);
     }
+
+    error = analyseHTMLFile(destinationFileName,linkStorageDir);
 
     return 0;
 }
@@ -297,4 +322,19 @@ int remove_directory(const char *path)
         r = rmdir(path);
     }
     return r;
+}
+
+int analyseHTMLFile(char* destinationFileName, char* linkStorageDir){
+    fprintf(stdout,"Scan of HTML File in Progress: '%s'\n",destinationFileName);
+    FILE* htmlFile = fopen(destinationFileName, "w");
+    if(htmlFile != NULL) {
+
+
+        
+
+
+
+        fclose(htmlFile);
+    }
+    return 0;
 }
