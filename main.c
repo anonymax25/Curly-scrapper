@@ -43,6 +43,8 @@ int main(int argc, char *argv[]) {
 
 int curlLink(char * currentURL,char** seenURL,int deepLevel,int versioning){
 
+    fprintf(stdout,"\n------------------------- Scan of new page!: %s -------------------------\n",currentURL);
+
     if(versioning == 0){ versioning = 0;}
     if(deepLevel == 0){ deepLevel = 2;}
     if(currentURL == NULL){ return -1;}
@@ -115,18 +117,18 @@ char* getTimeForDirName(){
     result = asctime(timeinfo);
 
     int i=0;
-    char tmp;
-    while(tmp != '\0'){
-        tmp=result[i];
-        if(tmp == ' ' || tmp == '\n'){
+    while(result[i] != '\0'){
+        if(result[i] == ' ' || result[i] == '\n'){
             result[i]='_';
         }
         i++;
     }
-
+    //fprintf(stdout," test  %s\n",result);
     return result;
 }
 int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLevel, char** seenURL){
+
+    fprintf(stdout,"Setup in progress...\n");
 
     int error = 0;
     //remove "http://wwww."
@@ -148,13 +150,13 @@ int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLev
 
 
     //main directory creation if absent
-    char curlStorageDir[255] = "CurlStorage";
+    char curlStorageDir[255] = "../CurlStorage";
     DIR* dir = opendir(curlStorageDir);
     if (dir) {
-        fprintf(stdout,"{%s} exists\n",curlStorageDir);
+        fprintf(stdout,"\t-{%s} folder exists\n",curlStorageDir);
         closedir(dir);
     } else {
-        fprintf(stdout,"{%s} doesn't exists, it is created\n",curlStorageDir);
+        fprintf(stdout,"\t-{%s} folder doesn't exists, it is created\n",curlStorageDir);
         mkdir(curlStorageDir, 0777);
     }
 
@@ -182,7 +184,7 @@ int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLev
 
         mkdir(linkStorageDir, 0777);
 
-        fprintf(stdout, "{%s} exists, file is overwritten\n", linkStorageDir);
+        fprintf(stdout, "\t-{%s} exists, folder is overwritten\n", linkStorageDir);
 
         strcat(linkStorageDir,"/");
         strcat(linkStorageDir,url);
@@ -192,7 +194,7 @@ int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLev
 
         mkdir(linkStorageDir, 0777);
 
-        fprintf(stdout, "{%s} exists, file is overwritten\n", linkStorageDir);
+        fprintf(stdout, "\t-{%s} exists, folder is overwritten\n", linkStorageDir);
 
     }else if (dir2 && doVersion == 1) {
 
@@ -210,7 +212,7 @@ int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLev
         strcat(linkStorageDir,versionNumberString);
 
         mkdir(linkStorageDir, 0777);
-        fprintf(stdout,"{%s} newly created with version\n",linkStorageDir);
+        fprintf(stdout,"\t-{%s} newly created folder with versioning\n",linkStorageDir);
 
     } else if (ENOENT == errno && doVersion == 0) {
 
@@ -223,7 +225,7 @@ int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLev
         strcat(linkStorageDir,"-V1");
 
         mkdir(linkStorageDir, 0777);
-        fprintf(stdout,"{%s} newly created without version\n",linkStorageDir);
+        fprintf(stdout,"\t-{%s} newly created folder without versioning\n",linkStorageDir);
 
     } else if (ENOENT == errno && doVersion == 1) {
 
@@ -236,7 +238,7 @@ int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLev
         strcat(linkStorageDir,"-V1");
 
         mkdir(linkStorageDir, 0777);
-        fprintf(stdout,"{%s} newly created with version\n",linkStorageDir);
+        fprintf(stdout,"\t-{%s} newly created with version\n",linkStorageDir);
     }
 
 
@@ -322,7 +324,7 @@ int remove_directory(const char *path)
 }
 
 int analyseHTMLFile(char* destinationFileName, char* linkStorageDir, int deepLevel, int doVersion, char** seenURL){
-    fprintf(stdout,"Scan of HTML File in Progress: '%s'\n\n",destinationFileName);
+    fprintf(stdout,"\nScan of HTML File in Progress: '%s'\n\n",destinationFileName);
     FILE* htmlFile = fopen(destinationFileName, "r");
     char *line = NULL;
     int len = 0;
@@ -331,7 +333,6 @@ int analyseHTMLFile(char* destinationFileName, char* linkStorageDir, int deepLev
     int fileSize =0;
 
     if(htmlFile != NULL) {
-        fprintf(stdout,"File Opened\n");
 
         fseek(htmlFile, 0L, SEEK_END);
         fileSize = ftell(htmlFile);
@@ -340,11 +341,31 @@ int analyseHTMLFile(char* destinationFileName, char* linkStorageDir, int deepLev
             return 1;
 
 
-
+        fprintf(stdout,"Scanning for images...\n");
         //reading htmlfile line by line
         while(getline(&line, &len, htmlFile) != -1) {
-            while(strstr(line,"href=") != NULL){
+            //check if there is a image to download
+            while (strstr(line, "<img") != NULL && strstr(line, "src=") != NULL) {
 
+                linkPos = strstr(line, "src=");
+                *linkPos = '?';
+                linkPos += 5;
+                endLink = strchr(linkPos, '"');
+                *endLink = '\0';
+
+                fprintf(stdout, "\t-Found an image: (%s) saving image\n", linkPos);
+
+            }
+        }
+
+        //reset cursor for next search
+        rewind(htmlFile);
+
+        fprintf(stdout,"Scanning for links...\n");
+        //reading htmlfile line by line
+        while(getline(&line, &len, htmlFile) != -1) {
+            //check if there is a new link
+            while(strstr(line,"href=") != NULL){
                 linkPos = strstr(line,"href=");
                 *linkPos = '?';
                 linkPos += 6;
@@ -352,14 +373,11 @@ int analyseHTMLFile(char* destinationFileName, char* linkStorageDir, int deepLev
                 *endLink = '\0';
 
                 if(deepLevel > 1 && strstr(linkPos,"://") != NULL) {
-
-                    fprintf(stdout,"Found link: %s\n",linkPos);
+                    fprintf(stdout,"\t-Found href and is a link!!: %s starting scan of that page.\n",linkPos);
                     curlLink(linkPos,seenURL,deepLevel-1,doVersion);
-
                 }else{
-                    fprintf(stdout,"Found href, but not link: %s\n",linkPos);
+                    //fprintf(stdout,"Found href, but not link: %s\n",linkPos);
                 }
-
             }
         }
 
