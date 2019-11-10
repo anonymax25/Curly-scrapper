@@ -1,4 +1,4 @@
-# Install script for directory: /home/natin56y/CLionProjects/test-curl
+# Install script for directory: /home/natin56y/CLionProjects/Curli-curl-test-phase
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/natin56y/CLionProjects/test-curl/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

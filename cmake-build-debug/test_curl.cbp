@@ -8,28 +8,28 @@
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/home/natin56y/CLionProjects/test-curl/cmake-build-debug"/>
+				<Option working_dir="/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j2 -f &quot;/home/natin56y/CLionProjects/test-curl/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/natin56y/CLionProjects/test-curl/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j2 -f &quot;/home/natin56y/CLionProjects/test-curl/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j2 -f &quot;/home/natin56y/CLionProjects/test-curl/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/home/natin56y/CLionProjects/test-curl/cmake-build-debug"/>
+				<Option working_dir="/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j2 -f &quot;/home/natin56y/CLionProjects/test-curl/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/natin56y/CLionProjects/test-curl/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j2 -f &quot;/home/natin56y/CLionProjects/test-curl/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j2 -f &quot;/home/natin56y/CLionProjects/test-curl/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="test_curl">
-				<Option output="/home/natin56y/CLionProjects/test-curl/cmake-build-debug/test_curl" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/natin56y/CLionProjects/test-curl/cmake-build-debug"/>
+				<Option output="/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/test_curl" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -41,15 +41,15 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j2 -f &quot;/home/natin56y/CLionProjects/test-curl/cmake-build-debug/Makefile&quot;  VERBOSE=1 test_curl"/>
-					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/natin56y/CLionProjects/test-curl/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j2 -f &quot;/home/natin56y/CLionProjects/test-curl/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j2 -f &quot;/home/natin56y/CLionProjects/test-curl/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/Makefile&quot;  VERBOSE=1 test_curl"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="test_curl/fast">
-				<Option output="/home/natin56y/CLionProjects/test-curl/cmake-build-debug/test_curl" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/natin56y/CLionProjects/test-curl/cmake-build-debug"/>
+				<Option output="/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/test_curl" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -61,27 +61,27 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j2 -f &quot;/home/natin56y/CLionProjects/test-curl/cmake-build-debug/Makefile&quot;  VERBOSE=1 test_curl/fast"/>
-					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/natin56y/CLionProjects/test-curl/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j2 -f &quot;/home/natin56y/CLionProjects/test-curl/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j2 -f &quot;/home/natin56y/CLionProjects/test-curl/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/Makefile&quot;  VERBOSE=1 test_curl/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/home/natin56y/CLionProjects/test-curl/cmake-build-debug"/>
+				<Option working_dir="/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j2 -f &quot;/home/natin56y/CLionProjects/test-curl/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/natin56y/CLionProjects/test-curl/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j2 -f &quot;/home/natin56y/CLionProjects/test-curl/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j2 -f &quot;/home/natin56y/CLionProjects/test-curl/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/natin56y/CLionProjects/test-curl/main.c">
+		<Unit filename="/home/natin56y/CLionProjects/Curli-curl-test-phase/main.c">
 			<Option target="test_curl"/>
 		</Unit>
-		<Unit filename="/home/natin56y/CLionProjects/test-curl/CMakeLists.txt">
+		<Unit filename="/home/natin56y/CLionProjects/Curli-curl-test-phase/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>

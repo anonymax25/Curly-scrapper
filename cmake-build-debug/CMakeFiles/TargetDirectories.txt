@@ -1,3 +1,3 @@
-/home/natin56y/CLionProjects/test-curl/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/natin56y/CLionProjects/test-curl/cmake-build-debug/CMakeFiles/test_curl.dir
-/home/natin56y/CLionProjects/test-curl/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/CMakeFiles/test_curl.dir
+/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/CMakeFiles/edit_cache.dir

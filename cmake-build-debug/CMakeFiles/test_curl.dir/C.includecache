@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/natin56y/CLionProjects/test-curl/main.c
+/home/natin56y/CLionProjects/Curli-curl-test-phase/main.c
 stdio.h
 -
 stdlib.h

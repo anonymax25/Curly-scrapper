@@ -1,5 +1,13 @@
-/home/natin56y/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/192.7142.39/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/natin56y/CLionProjects/test-curl
-Curl found
+/home/natin56y/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/192.7142.39/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/natin56y/CLionProjects/Curli-curl-test-phase
+-- The C compiler identification is GNU 7.4.0
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Could NOT find CURL (missing: CURL_LIBRARY CURL_INCLUDE_DIR) 
+Curlnotfound
 -- Configuring done
 -- Generating done
--- Build files have been written to: /home/natin56y/CLionProjects/test-curl/cmake-build-debug
+-- Build files have been written to: /home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug

@@ -9,7 +9,11 @@
 #include <sys/stat.h>
 
 
-
+typedef struct link{
+    int pos;
+    char link[255];
+    int level;
+};
 
 int curlLink(char * currentURL,char** seenURL,int deepLevel,int versioning);
 
@@ -17,13 +21,13 @@ int countFilesInDir(char* location);
 
 char* getTimeForDirName();
 
-int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion);
+int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLevel);
 
 static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream);
 
 int remove_directory(const char *path);
 
-int analyseHTMLFile(char* destinationFileName, char* linkStorageDir);
+int analyseHTMLFile(char* destinationFileName, char* linkStorageDir, int deepLevel);
 
 
 
@@ -36,7 +40,7 @@ int main(int argc, char *argv[]) {
     int deepLevel;
     int doVersion;
 
-    doVersion = 1; // true/flase
+    doVersion = 0; // true/flase
     deepLevel = 2;
 
     return curlLink(url,seenLinks,deepLevel,doVersion);
@@ -80,7 +84,7 @@ int curlLink(char * currentURL,char** seenURL,int deepLevel,int versioning){
     curl_easy_setopt(curl_handle, CURLOPT_EXPECT_100_TIMEOUT_MS, 0L);
 
 
-    writeCurlHandleToFile(curl_handle,currentURL,versioning);
+    writeCurlHandleToFile(curl_handle,currentURL,versioning,deepLevel);
 
     //cleanup
     curl_easy_cleanup(curl_handle);
@@ -129,7 +133,7 @@ char* getTimeForDirName(){
 
     return result;
 }
-int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion){
+int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLevel){
 
     int error = 0;
     //remove "http://wwww."
@@ -269,7 +273,7 @@ int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion){
         fprintf(stdout,"Error opening file: %s\n",destinationFileName);
     }
 
-    error = analyseHTMLFile(destinationFileName,linkStorageDir);
+    error = analyseHTMLFile(destinationFileName,linkStorageDir,deepLevel);
 
     return 0;
 }
@@ -324,17 +328,36 @@ int remove_directory(const char *path)
     return r;
 }
 
-int analyseHTMLFile(char* destinationFileName, char* linkStorageDir){
-    fprintf(stdout,"Scan of HTML File in Progress: '%s'\n",destinationFileName);
-    FILE* htmlFile = fopen(destinationFileName, "w");
+int analyseHTMLFile(char* destinationFileName, char* linkStorageDir, int deepLevel){
+    fprintf(stdout,"Scan of HTML File in Progress: '%s'\n\n",destinationFileName);
+    FILE* htmlFile = fopen(destinationFileName, "r");
+    char *line = NULL;
+    int len = 0;
+    char* linkPos;
+    struct link* currentLink;
+
     if(htmlFile != NULL) {
+        fprintf(stdout,"File Opened\n");
 
 
-        
+
+        //reading htmlfile line by line
+        while(getline(&line, &len, htmlFile) != -1) {
+
+            while(strstr(line,"href=") != NULL){
+                linkPos = strstr(line,"href=");
+                *linkPos = '?';
+                strcpy(currentLink->link, linkPos+6);
+                currentLink->level =
 
 
+                fprintf(stdout,"%s\n",line);
+            }
+        }
 
         fclose(htmlFile);
+    }else{
+        fprintf(stdout,"File couldn't open\n");
     }
     return 0;
 }
