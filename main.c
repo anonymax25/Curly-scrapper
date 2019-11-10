@@ -9,25 +9,19 @@
 #include <sys/stat.h>
 
 
-typedef struct link{
-    int pos;
-    char link[255];
-    int level;
-};
-
 int curlLink(char * currentURL,char** seenURL,int deepLevel,int versioning);
 
 int countFilesInDir(char* location);
 
 char* getTimeForDirName();
 
-int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLevel);
+int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLevel, char** seenURL);
 
 static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream);
 
 int remove_directory(const char *path);
 
-int analyseHTMLFile(char* destinationFileName, char* linkStorageDir, int deepLevel);
+int analyseHTMLFile(char* destinationFileName, char* linkStorageDir, int deepLevel, int doVersion, char** seenURL);
 
 
 
@@ -35,15 +29,15 @@ int main(int argc, char *argv[]) {
 
     //input qui arrive depuis la partie config
     char ** seenLinks = NULL;
-    //char url[255] = "https://www.iana.org/domains/example";
-    char url[255] = "http://www.example.com";
+    //char startURL[255] = "https://www.iana.org/domains/example";
+    char startURL[255] = "http://www.example.com";
     int deepLevel;
     int doVersion;
 
     doVersion = 0; // true/flase
     deepLevel = 2;
 
-    return curlLink(url,seenLinks,deepLevel,doVersion);
+    return curlLink(startURL,seenLinks,deepLevel,doVersion);
 
 }
 
@@ -77,14 +71,13 @@ int curlLink(char * currentURL,char** seenURL,int deepLevel,int versioning){
     curl_easy_setopt(curl_handle, CURLOPT_CONNECTTIMEOUT, 2L);
     curl_easy_setopt(curl_handle, CURLOPT_COOKIEFILE, "");
     curl_easy_setopt(curl_handle, CURLOPT_FILETIME, 1L);
-    curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "mini crawler");
     curl_easy_setopt(curl_handle, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
     curl_easy_setopt(curl_handle, CURLOPT_UNRESTRICTED_AUTH, 1L);
     curl_easy_setopt(curl_handle, CURLOPT_PROXYAUTH, CURLAUTH_ANY);
     curl_easy_setopt(curl_handle, CURLOPT_EXPECT_100_TIMEOUT_MS, 0L);
 
 
-    writeCurlHandleToFile(curl_handle,currentURL,versioning,deepLevel);
+    writeCurlHandleToFile(curl_handle,currentURL,versioning,deepLevel,seenURL);
 
     //cleanup
     curl_easy_cleanup(curl_handle);
@@ -133,7 +126,7 @@ char* getTimeForDirName(){
 
     return result;
 }
-int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLevel){
+int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLevel, char** seenURL){
 
     int error = 0;
     //remove "http://wwww."
@@ -273,7 +266,7 @@ int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLev
         fprintf(stdout,"Error opening file: %s\n",destinationFileName);
     }
 
-    error = analyseHTMLFile(destinationFileName,linkStorageDir,deepLevel);
+    error = analyseHTMLFile(destinationFileName,linkStorageDir,deepLevel, doVersion, seenURL);
 
     return 0;
 }
@@ -328,30 +321,45 @@ int remove_directory(const char *path)
     return r;
 }
 
-int analyseHTMLFile(char* destinationFileName, char* linkStorageDir, int deepLevel){
+int analyseHTMLFile(char* destinationFileName, char* linkStorageDir, int deepLevel, int doVersion, char** seenURL){
     fprintf(stdout,"Scan of HTML File in Progress: '%s'\n\n",destinationFileName);
     FILE* htmlFile = fopen(destinationFileName, "r");
     char *line = NULL;
     int len = 0;
+    char* endLink;
     char* linkPos;
-    struct link* currentLink;
+    int fileSize =0;
 
     if(htmlFile != NULL) {
         fprintf(stdout,"File Opened\n");
+
+        fseek(htmlFile, 0L, SEEK_END);
+        fileSize = ftell(htmlFile);
+        rewind(htmlFile);
+        if(fileSize < 10)
+            return 1;
 
 
 
         //reading htmlfile line by line
         while(getline(&line, &len, htmlFile) != -1) {
-
             while(strstr(line,"href=") != NULL){
+
                 linkPos = strstr(line,"href=");
                 *linkPos = '?';
-                strcpy(currentLink->link, linkPos+6);
-                currentLink->level =
+                linkPos += 6;
+                endLink = strchr(linkPos,'"');
+                *endLink = '\0';
 
+                if(deepLevel > 1 && strstr(linkPos,"://") != NULL) {
 
-                fprintf(stdout,"%s\n",line);
+                    fprintf(stdout,"Found link: %s\n",linkPos);
+                    curlLink(linkPos,seenURL,deepLevel-1,doVersion);
+
+                }else{
+                    fprintf(stdout,"Found href, but not link: %s\n",linkPos);
+                }
+
             }
         }
 
