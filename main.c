@@ -21,8 +21,9 @@ static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream);
 
 int remove_directory(const char *path);
 
-int analyseHTMLFile(char* destinationFileName, char* linkStorageDir, int deepLevel, int doVersion, char** seenURL);
+int analyseHTMLFile(char* destinationFileName, char* linkStorageDir, int deepLevel, int doVersion, char** seenURL,char* currentURL);
 
+int curlAnImage(char* imageURLPart,char* destination, char* currentURL);
 
 
 int main(int argc, char *argv[]) {
@@ -44,7 +45,7 @@ int main(int argc, char *argv[]) {
 int curlLink(char * currentURL,char** seenURL,int deepLevel,int versioning){
 
     fprintf(stdout,"\n------------------------- Scan of new page!: %s -------------------------\n",currentURL);
-
+    int error = 0;
     if(versioning == 0){ versioning = 0;}
     if(deepLevel == 0){ deepLevel = 2;}
     if(currentURL == NULL){ return -1;}
@@ -79,13 +80,13 @@ int curlLink(char * currentURL,char** seenURL,int deepLevel,int versioning){
     curl_easy_setopt(curl_handle, CURLOPT_EXPECT_100_TIMEOUT_MS, 0L);
 
 
-    writeCurlHandleToFile(curl_handle,currentURL,versioning,deepLevel,seenURL);
+    error = writeCurlHandleToFile(curl_handle,currentURL,versioning,deepLevel,seenURL);
 
     //cleanup
     curl_easy_cleanup(curl_handle);
     curl_global_cleanup();
 
-    return 0;
+    return error;
 
 }
 
@@ -106,6 +107,8 @@ int countFilesInDir(char* location){
 
     return n-2;
 }
+
+
 
 char* getTimeForDirName(){
     char* result;
@@ -241,7 +244,10 @@ int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLev
         fprintf(stdout,"\t-{%s} newly created with version\n",linkStorageDir);
     }
 
-
+    char imageDir[255] = "\0";
+    strcat(imageDir, linkStorageDir);
+    strcat(imageDir, "/images");
+    mkdir(imageDir, 0777);
 
 
 
@@ -268,9 +274,9 @@ int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLev
         fprintf(stdout,"Error opening file: %s\n",destinationFileName);
     }
 
-    error = analyseHTMLFile(destinationFileName,linkStorageDir,deepLevel, doVersion, seenURL);
+    error = analyseHTMLFile(destinationFileName,linkStorageDir,deepLevel, doVersion, seenURL, url);
 
-    return 0;
+    return error;
 }
 
 static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
@@ -323,7 +329,7 @@ int remove_directory(const char *path)
     return r;
 }
 
-int analyseHTMLFile(char* destinationFileName, char* linkStorageDir, int deepLevel, int doVersion, char** seenURL){
+int analyseHTMLFile(char* destinationFileName, char* linkStorageDir, int deepLevel, int doVersion, char** seenURL,char* currentURL){
     fprintf(stdout,"\nScan of HTML File in Progress: '%s'\n\n",destinationFileName);
     FILE* htmlFile = fopen(destinationFileName, "r");
     char *line = NULL;
@@ -353,7 +359,8 @@ int analyseHTMLFile(char* destinationFileName, char* linkStorageDir, int deepLev
                 endLink = strchr(linkPos, '"');
                 *endLink = '\0';
 
-                fprintf(stdout, "\t-Found an image: (%s) saving image\n", linkPos);
+                fprintf(stdout, "\t-Found an image: (%s) saving in /images\n", linkPos);
+                curlAnImage(linkPos,linkStorageDir,currentURL);
 
             }
         }
@@ -385,5 +392,62 @@ int analyseHTMLFile(char* destinationFileName, char* linkStorageDir, int deepLev
     }else{
         fprintf(stdout,"File couldn't open\n");
     }
+    return 0;
+}
+
+
+int curlAnImage(char* imageURLPart,char* destination, char* currentURL){
+
+    CURL* image;
+    CURLcode imgresult;
+    FILE *fp;
+
+    //Url for the image
+    char searchImageURL[255] = "\0";
+    *strchr(currentURL,'_') = '\0';
+    strcat(searchImageURL,"www.");
+    strcat(searchImageURL,currentURL);
+    strcat(searchImageURL,imageURLPart);
+    fprintf(stdout,"\t\t-Search: %s\n", searchImageURL);
+
+    int i=0;
+    while(imageURLPart[i] != '\0'){
+        if(imageURLPart[i] == '/')
+            imageURLPart[i] = '_';
+        i++;
+    }
+
+    //destination for image file
+    strcat(destination,"/images/");
+    strcat(destination,imageURLPart);
+
+    image = curl_easy_init();
+    if( image ){
+        // Open file
+        fp = fopen(destination, "wb");
+        if( fp == NULL )
+            fprintf(stdout,"\t\t-Cannot open file! %s\n", destination);
+
+        curl_easy_setopt(image, CURLOPT_URL, searchImageURL);
+        curl_easy_setopt(image, CURLOPT_WRITEFUNCTION, NULL);
+        curl_easy_setopt(image, CURLOPT_WRITEDATA, fp);
+        curl_easy_setopt(image, CURLOPT_TIMEOUT, 5L);
+        curl_easy_setopt(image, CURLOPT_USERAGENT, "Mozilla/5.0");
+
+
+        // Grab image
+        imgresult = curl_easy_perform(image);
+
+        fclose(fp);
+    }
+    if( imgresult ){
+        fprintf(stdout,"\t\t-Cannot grab the image!\n");
+    }else{
+        fprintf(stdout,"\t\t-Image saved!\n");
+    }
+
+    // Clean up the resources
+    curl_easy_cleanup(image);
+
     return 0;
 }
