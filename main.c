@@ -46,8 +46,6 @@ int curlLink(char * currentURL,char** seenURL,int deepLevel,int versioning){
 
     fprintf(stdout,"\n------------------------- Scan of new page!: %s -------------------------\n",currentURL);
     int error = 0;
-    if(versioning == 0){ versioning = 0;}
-    if(deepLevel == 0){ deepLevel = 2;}
     if(currentURL == NULL){ return -1;}
 
     CURL *curl_handle;
@@ -78,7 +76,6 @@ int curlLink(char * currentURL,char** seenURL,int deepLevel,int versioning){
     curl_easy_setopt(curl_handle, CURLOPT_UNRESTRICTED_AUTH, 1L);
     curl_easy_setopt(curl_handle, CURLOPT_PROXYAUTH, CURLAUTH_ANY);
     curl_easy_setopt(curl_handle, CURLOPT_EXPECT_100_TIMEOUT_MS, 0L);
-
 
     error = writeCurlHandleToFile(curl_handle,currentURL,versioning,deepLevel,seenURL);
 
@@ -153,7 +150,7 @@ int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLev
 
 
     //main directory creation if absent
-    char curlStorageDir[255] = "../CurlStorage";
+    char curlStorageDir[255] = "CurlStorage";
     DIR* dir = opendir(curlStorageDir);
     if (dir) {
         fprintf(stdout,"\t-{%s} folder exists\n",curlStorageDir);
@@ -264,9 +261,10 @@ int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLev
     if(pagefile != NULL) {
         // write page to file
         curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, pagefile);
-
+        usleep(50);
         // get it!
         curl_easy_perform(curl_handle);
+        usleep(50);
 
         // close the header file
         fclose(pagefile);
@@ -332,11 +330,15 @@ int remove_directory(const char *path)
 int analyseHTMLFile(char* destinationFileName, char* linkStorageDir, int deepLevel, int doVersion, char** seenURL,char* currentURL){
     fprintf(stdout,"\nScan of HTML File in Progress: '%s'\n\n",destinationFileName);
     FILE* htmlFile = fopen(destinationFileName, "r");
-    char *line = NULL;
+    if(htmlFile == NULL)
+        return 1;
+
+    char *line = malloc(sizeof(char)*100000);
     int len = 0;
+    int fileSize = 0;
     char* endLink;
-    char* linkPos;
-    int fileSize =0;
+    char* linkPos = malloc(sizeof(char)*100000);
+
 
     if(htmlFile != NULL) {
 
@@ -353,45 +355,59 @@ int analyseHTMLFile(char* destinationFileName, char* linkStorageDir, int deepLev
             //check if there is a image to download
             while (strstr(line, "<img") != NULL && strstr(line, "src=") != NULL) {
 
-                linkPos = strstr(line, "src=");
+                linkPos = strstr(line, "<img");
+                *linkPos = '?';
+                linkPos = strstr(linkPos, "src=");
                 *linkPos = '?';
                 linkPos += 5;
                 endLink = strchr(linkPos, '"');
                 *endLink = '\0';
 
+
+                //*(linkPos+(endLink-linkPos))='\0';
+                //strcpy(endLink,"\0");
+                //*strchr(linkPos, '"') = '\0';
+
+
+                //fprintf(stdout, "\t test %c %d\n", *strchr(linkPos, '"'),(int)(endLink-linkPos));
                 fprintf(stdout, "\t-Found an image: (%s) saving in /images\n", linkPos);
                 curlAnImage(linkPos,linkStorageDir,currentURL);
 
             }
         }
 
-        //reset cursor for next search
+        //reset cursor for next file search :D
         rewind(htmlFile);
 
-        fprintf(stdout,"Scanning for links...\n");
-        //reading htmlfile line by line
-        while(getline(&line, &len, htmlFile) != -1) {
-            //check if there is a new link
-            while(strstr(line,"href=") != NULL){
-                linkPos = strstr(line,"href=");
-                *linkPos = '?';
-                linkPos += 6;
-                endLink = strchr(linkPos,'"');
-                *endLink = '\0';
+        if(deepLevel>0) {
+            fprintf(stdout, "Scanning for links... , deepness = %d \n",deepLevel);
+            //reading htmlfile line by line
+            while (getline(&line, &len, htmlFile) != -1) {
+                //check if there is a new link
+                while (strstr(line, "href=") != NULL) {
+                    linkPos = strstr(line, "href=");
+                    *linkPos = '?';
+                    linkPos += 6;
+                    endLink = strchr(linkPos, '"');
+                    *endLink = '\0';
 
-                if(deepLevel > 1 && strstr(linkPos,"://") != NULL) {
-                    fprintf(stdout,"\t-Found href and is a link!!: %s starting scan of that page.\n",linkPos);
-                    curlLink(linkPos,seenURL,deepLevel-1,doVersion);
-                }else{
-                    //fprintf(stdout,"Found href, but not link: %s\n",linkPos);
+                    if (deepLevel > 0 && strstr(linkPos, "://") != NULL) {
+                        fprintf(stdout, "\t-Found href and is a link!!: %s starting scan of that page.\n", linkPos);
+
+                        curlLink(linkPos, seenURL, deepLevel - 1, doVersion);
+                    }
                 }
             }
+        }else{
+            fprintf(stdout, "Not scanning for links, maximum deepness reached.\n");
         }
 
         fclose(htmlFile);
     }else{
         fprintf(stdout,"File couldn't open\n");
     }
+
+    //free(linkPos);
     return 0;
 }
 
@@ -404,12 +420,38 @@ int curlAnImage(char* imageURLPart,char* destination, char* currentURL){
 
     //Url for the image
     char searchImageURL[255] = "\0";
-    *strchr(currentURL,'_') = '\0';
-    strcat(searchImageURL,"www.");
-    strcat(searchImageURL,currentURL);
-    strcat(searchImageURL,imageURLPart);
-    fprintf(stdout,"\t\t-Search: %s\n", searchImageURL);
 
+    char localDestination[255] = "\0";
+    char imageLogFileDestination[255] = "\0";
+
+    //get domain name before /
+    if(strchr(currentURL,'_') != NULL)
+        *strchr(currentURL,'_') = '\0';
+
+    //change if is not a link or already is
+    if(strstr(imageURLPart,"://") == NULL){
+        strcat(searchImageURL,"www.");
+        strcat(searchImageURL,currentURL);
+        strcat(searchImageURL,imageURLPart);
+    }else{
+        imageURLPart = strstr(imageURLPart,"://") + 3;
+        strcat(searchImageURL,imageURLPart);
+    }
+
+    strcat(imageLogFileDestination,destination);
+    strcat(imageLogFileDestination,"/Images link list.txt");
+    FILE *imageLog;
+    imageLog = fopen(imageLogFileDestination, "a");
+    if( imageLog != NULL ){
+        fprintf(imageLog,"%s\n", searchImageURL);
+        fclose(imageLog);
+    }else{
+        fprintf(stdout,"\t\t-Cannot open image log file!\n");
+    }
+
+
+
+    //replace '/' by '_' to get image name/path
     int i=0;
     while(imageURLPart[i] != '\0'){
         if(imageURLPart[i] == '/')
@@ -418,15 +460,20 @@ int curlAnImage(char* imageURLPart,char* destination, char* currentURL){
     }
 
     //destination for image file
-    strcat(destination,"/images/");
-    strcat(destination,imageURLPart);
+    strcat(localDestination,destination);
+    strcat(localDestination,"/images/");
+
+    //add image file name to path/destination string
+    strcat(localDestination,imageURLPart);
 
     image = curl_easy_init();
-    if( image ){
+    if(image){
         // Open file
-        fp = fopen(destination, "wb");
+        fp = fopen(localDestination, "wb");
         if( fp == NULL )
-            fprintf(stdout,"\t\t-Cannot open file! %s\n", destination);
+            fprintf(stdout,"\t\t-Cannot open file! %s\n", localDestination);
+        else
+            fprintf(stdout,"\t\t-Open file! %s\n", localDestination);
 
         curl_easy_setopt(image, CURLOPT_URL, searchImageURL);
         curl_easy_setopt(image, CURLOPT_WRITEFUNCTION, NULL);
