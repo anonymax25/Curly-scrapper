@@ -45,6 +45,7 @@ int main(int argc, char *argv[]) {
 int curlLink(char * currentURL,char** seenURL,int deepLevel,int versioning){
 
     fprintf(stdout,"\n------------------------- Scan of new page!: %s -------------------------\n",currentURL);
+
     int error = 0;
     if(currentURL == NULL){ return -1;}
 
@@ -134,12 +135,19 @@ int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLev
     //remove "http://wwww."
     char doubleU;
     int indexChar = 0;
-    while(url[indexChar] != 'w'){
-        indexChar++;
+
+    if(strstr(url,"www.") != NULL) {
+        while (url[indexChar] != 'w') {
+            indexChar++;
+        }
+        indexChar += 4;
+        url = &url[indexChar];
+    }else{
+        url = strstr(url,"://") + 3;
+
     }
 
-    indexChar+=4;
-    url = &url[indexChar];
+    //fprintf(stdout,"\t-{%s}\n",url);
 
     indexChar = 0;
     while(url[indexChar] != '\0'){
@@ -407,6 +415,7 @@ int analyseHTMLFile(char* destinationFileName, char* linkStorageDir, int deepLev
         fprintf(stdout,"File couldn't open\n");
     }
 
+    fprintf(stdout,"\n-------------------------------------------------------------------\n");
     //free(linkPos);
     return 0;
 }
@@ -475,7 +484,8 @@ int curlAnImage(char* imageURLPart,char* destination, char* currentURL){
         else
             fprintf(stdout,"\t\t-Open file! %s\n", localDestination);
 
-        curl_easy_setopt(image, CURLOPT_URL, searchImageURL);
+        //curl_easy_setopt(image, CURLOPT_URL, searchImageURL);
+        curl_easy_setopt(image, CURLOPT_URL, "www.icann.org/uploads/featured_item/image/7/thumb_icann67-attend.jpg");
         curl_easy_setopt(image, CURLOPT_WRITEFUNCTION, NULL);
         curl_easy_setopt(image, CURLOPT_WRITEDATA, fp);
         curl_easy_setopt(image, CURLOPT_TIMEOUT, 5L);
@@ -484,6 +494,8 @@ int curlAnImage(char* imageURLPart,char* destination, char* currentURL){
 
         // Grab image
         imgresult = curl_easy_perform(image);
+
+        curl_easy_cleanup(image); //Clean up curl
 
         fclose(fp);
     }
