@@ -35,10 +35,18 @@ int main(int argc, char *argv[]) {
     int deepLevel;
     int doVersion;
 
+    int result = 0;
+
     doVersion = 0; // true/flase
     deepLevel = 2;
 
-    return curlLink(startURL,seenLinks,deepLevel,doVersion);
+    result = curlLink(startURL,seenLinks,deepLevel,doVersion);
+    if(result == 0){
+        fprintf(stdout,"End of Curly action, went without errors\n");
+    }else{
+        fprintf(stdout,"Error! End of Curly action, one or more errors occured!\n");
+    }
+    return result;
 
 }
 
@@ -52,6 +60,25 @@ int curlLink(char * currentURL,char** seenURL,int deepLevel,int versioning){
     CURL *curl_handle;
     curl_global_init(CURL_GLOBAL_ALL);
     curl_handle = curl_easy_init();
+
+    //create misc Curly dir if not there
+    char curlMiscDir[255] = "Curly Misc Files";
+    DIR* dir = opendir(curlMiscDir);
+    if (dir) {
+        closedir(dir);
+    } else {
+        mkdir(curlMiscDir, 0777);
+    }
+
+    //log this action if versionning is active in Curly ann
+    FILE *imageLog;
+    imageLog = fopen(strcat(curlMiscDir,"/Action history.txt"), "a");
+    if( imageLog != NULL ){
+        fprintf(imageLog,"Curly action: url = %s, max_deepness = %d, do_versionning = %d \n",currentURL,deepLevel,versioning);
+        fclose(imageLog);
+    }else{
+        fprintf(stdout,"-Cannot open action log file!\n");
+    }
 
     /* set URL to get here */
     curl_easy_setopt(curl_handle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
@@ -158,7 +185,7 @@ int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLev
 
 
     //main directory creation if absent
-    char curlStorageDir[255] = "CurlStorage";
+    char curlStorageDir[255] = "Curly Storage";
     DIR* dir = opendir(curlStorageDir);
     if (dir) {
         fprintf(stdout,"\t-{%s} folder exists\n",curlStorageDir);
@@ -261,7 +288,7 @@ int writeCurlHandleToFile(CURL *curl_handle,char* url,int doVersion, int deepLev
     strcat(destinationFileName,linkStorageDir);
     strcat(destinationFileName,"/");
     strcat(destinationFileName,url);
-    strcat(destinationFileName,".txt");
+    strcat(destinationFileName,".html");
 
 
     //file open, then write
