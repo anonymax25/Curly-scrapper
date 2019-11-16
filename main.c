@@ -484,9 +484,9 @@ int curlAnImage(char* imageURLPart,char* destination, char* currentURL){
         else
             fprintf(stdout,"\t\t-Open file! %s\n", localDestination);
 
-        //curl_easy_setopt(image, CURLOPT_URL, searchImageURL);
-        curl_easy_setopt(image, CURLOPT_URL, "www.icann.org/uploads/featured_item/image/7/thumb_icann67-attend.jpg");
-        curl_easy_setopt(image, CURLOPT_WRITEFUNCTION, NULL);
+        curl_easy_setopt(image, CURLOPT_URL, searchImageURL);
+        //curl_easy_setopt(image, CURLOPT_URL, "www.icann.org/uploads/featured_item/image/7/thumb_icann67-attend.jpg");
+        curl_easy_setopt(image, CURLOPT_WRITEFUNCTION, write_data);
         curl_easy_setopt(image, CURLOPT_WRITEDATA, fp);
         curl_easy_setopt(image, CURLOPT_TIMEOUT, 5L);
         curl_easy_setopt(image, CURLOPT_USERAGENT, "Mozilla/5.0");
@@ -495,7 +495,6 @@ int curlAnImage(char* imageURLPart,char* destination, char* currentURL){
         // Grab image
         imgresult = curl_easy_perform(image);
 
-        curl_easy_cleanup(image); //Clean up curl
 
         fclose(fp);
     }
