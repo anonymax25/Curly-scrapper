@@ -59,7 +59,7 @@ int curlLink(char * currentURL,char** seenURL,int deepLevel,int versioning){
 
     curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "Mozilla/5.0");
     /* Switch on full protocol/debug output while testing */
-    curl_easy_setopt(curl_handle, CURLOPT_VERBOSE, 1L);
+    curl_easy_setopt(curl_handle, CURLOPT_VERBOSE, 0L);
     /* disable progress meter, set to 0L to enable and disable debug output */
     curl_easy_setopt(curl_handle, CURLOPT_NOPROGRESS, 1L);
     /* send all data to this function  */
