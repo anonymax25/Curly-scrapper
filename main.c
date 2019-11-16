@@ -57,7 +57,7 @@ int curlLink(char * currentURL,char** seenURL,int deepLevel,int versioning){
     curl_easy_setopt(curl_handle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
     curl_easy_setopt(curl_handle, CURLOPT_URL, currentURL);
 
-    curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "Mozilla/5.0");
+    curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36");
     /* Switch on full protocol/debug output while testing */
     curl_easy_setopt(curl_handle, CURLOPT_VERBOSE, 0L);
     /* disable progress meter, set to 0L to enable and disable debug output */
@@ -486,10 +486,13 @@ int curlAnImage(char* imageURLPart,char* destination, char* currentURL){
 
         curl_easy_setopt(image, CURLOPT_URL, searchImageURL);
         //curl_easy_setopt(image, CURLOPT_URL, "www.icann.org/uploads/featured_item/image/7/thumb_icann67-attend.jpg");
+        curl_easy_setopt(image, CURLOPT_VERBOSE, 0L);
+        curl_easy_setopt(image, CURLOPT_FOLLOWLOCATION, 1L);
         curl_easy_setopt(image, CURLOPT_WRITEFUNCTION, write_data);
         curl_easy_setopt(image, CURLOPT_WRITEDATA, fp);
         curl_easy_setopt(image, CURLOPT_TIMEOUT, 5L);
-        curl_easy_setopt(image, CURLOPT_USERAGENT, "Mozilla/5.0");
+        curl_easy_setopt(image, CURLOPT_USERAGENT, "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36");
+
 
 
         // Grab image
