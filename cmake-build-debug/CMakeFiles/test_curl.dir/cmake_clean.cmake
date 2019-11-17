@@ -1,5 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/test_curl.dir/main.c.o"
+  "CMakeFiles/test_curl.dir/mainCurly.c.o"
+  "CMakeFiles/test_curl.dir/setupDirCurly.c.o"
   "test_curl"
   "test_curl.pdb"
 )

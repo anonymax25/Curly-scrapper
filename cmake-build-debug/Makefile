@@ -150,6 +150,60 @@ main.c.s:
 	$(MAKE) -f CMakeFiles/test_curl.dir/build.make CMakeFiles/test_curl.dir/main.c.s
 .PHONY : main.c.s
 
+mainCurly.o: mainCurly.c.o
+
+.PHONY : mainCurly.o
+
+# target to build an object file
+mainCurly.c.o:
+	$(MAKE) -f CMakeFiles/test_curl.dir/build.make CMakeFiles/test_curl.dir/mainCurly.c.o
+.PHONY : mainCurly.c.o
+
+mainCurly.i: mainCurly.c.i
+
+.PHONY : mainCurly.i
+
+# target to preprocess a source file
+mainCurly.c.i:
+	$(MAKE) -f CMakeFiles/test_curl.dir/build.make CMakeFiles/test_curl.dir/mainCurly.c.i
+.PHONY : mainCurly.c.i
+
+mainCurly.s: mainCurly.c.s
+
+.PHONY : mainCurly.s
+
+# target to generate assembly for a file
+mainCurly.c.s:
+	$(MAKE) -f CMakeFiles/test_curl.dir/build.make CMakeFiles/test_curl.dir/mainCurly.c.s
+.PHONY : mainCurly.c.s
+
+setupDirCurly.o: setupDirCurly.c.o
+
+.PHONY : setupDirCurly.o
+
+# target to build an object file
+setupDirCurly.c.o:
+	$(MAKE) -f CMakeFiles/test_curl.dir/build.make CMakeFiles/test_curl.dir/setupDirCurly.c.o
+.PHONY : setupDirCurly.c.o
+
+setupDirCurly.i: setupDirCurly.c.i
+
+.PHONY : setupDirCurly.i
+
+# target to preprocess a source file
+setupDirCurly.c.i:
+	$(MAKE) -f CMakeFiles/test_curl.dir/build.make CMakeFiles/test_curl.dir/setupDirCurly.c.i
+.PHONY : setupDirCurly.c.i
+
+setupDirCurly.s: setupDirCurly.c.s
+
+.PHONY : setupDirCurly.s
+
+# target to generate assembly for a file
+setupDirCurly.c.s:
+	$(MAKE) -f CMakeFiles/test_curl.dir/build.make CMakeFiles/test_curl.dir/setupDirCurly.c.s
+.PHONY : setupDirCurly.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -162,6 +216,12 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... mainCurly.o"
+	@echo "... mainCurly.i"
+	@echo "... mainCurly.s"
+	@echo "... setupDirCurly.o"
+	@echo "... setupDirCurly.i"
+	@echo "... setupDirCurly.s"
 .PHONY : help
 
 

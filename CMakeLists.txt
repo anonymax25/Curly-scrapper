@@ -3,7 +3,7 @@ project(test_curl C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(test_curl main.c)
+add_executable(test_curl main.c setupDirCurly.c includes/setupDirCurly.h mainCurly.c includes/mainCurly.h)
 
 find_package(CURL)
 if (CURL_FOUND)

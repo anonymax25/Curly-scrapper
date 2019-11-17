@@ -5,6 +5,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
   "/home/natin56y/CLionProjects/Curli-curl-test-phase/main.c" "/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/CMakeFiles/test_curl.dir/main.c.o"
+  "/home/natin56y/CLionProjects/Curli-curl-test-phase/mainCurly.c" "/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/CMakeFiles/test_curl.dir/mainCurly.c.o"
+  "/home/natin56y/CLionProjects/Curli-curl-test-phase/setupDirCurly.c" "/home/natin56y/CLionProjects/Curli-curl-test-phase/cmake-build-debug/CMakeFiles/test_curl.dir/setupDirCurly.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

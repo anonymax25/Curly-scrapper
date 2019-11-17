@@ -78,7 +78,19 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/natin56y/CLionProjects/Curli-curl-test-phase/includes/mainCurly.h">
+			<Option target="test_curl"/>
+		</Unit>
+		<Unit filename="/home/natin56y/CLionProjects/Curli-curl-test-phase/includes/setupDirCurly.h">
+			<Option target="test_curl"/>
+		</Unit>
 		<Unit filename="/home/natin56y/CLionProjects/Curli-curl-test-phase/main.c">
+			<Option target="test_curl"/>
+		</Unit>
+		<Unit filename="/home/natin56y/CLionProjects/Curli-curl-test-phase/mainCurly.c">
+			<Option target="test_curl"/>
+		</Unit>
+		<Unit filename="/home/natin56y/CLionProjects/Curli-curl-test-phase/setupDirCurly.c">
 			<Option target="test_curl"/>
 		</Unit>
 		<Unit filename="/home/natin56y/CLionProjects/Curli-curl-test-phase/CMakeLists.txt">
